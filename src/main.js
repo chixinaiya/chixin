@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+//导入
+
 //导入路由
 //import router from './router/index.js'
 //1.router/index.js  省略 router 默认访问index.js文件
