@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-//导入axios
+//导入自己配置的axios
 
-import axios from 'axios'
+import axios from '@/api'
 
 //导入路由
 //import router from './router/index.js'
