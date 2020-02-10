@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import auth from '@/utils/auth'
 export default {
   name: 'app-login',
   data () {
@@ -62,6 +63,7 @@ export default {
           this.loginForm
           ).then(res=>{
             //跳转到首页
+            auth.setUser(res.data.data)
             this.$router.push('/')
           }).catch(()=>{
             this.$message.error('手机号或验证码错误')
