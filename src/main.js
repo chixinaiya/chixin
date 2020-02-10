@@ -3,7 +3,7 @@ import App from './App.vue'
 
 //导入axios
 
-import axios from 'axios'
+import axios from '@/api'
 
 //导入路由
 //import router from './router/index.js'
