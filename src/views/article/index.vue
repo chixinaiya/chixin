@@ -3,10 +3,7 @@
     <el-card>
       <div slot="header">
         <!-- 面包屑 -->
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>内容管理</el-breadcrumb-item>
-        </el-breadcrumb>
+        <my-bread>内容管理</my-bread>
       </div>
       <!-- 表单 -->
       <el-form label-width="80px" size="small">
@@ -24,9 +21,9 @@
           <el-select v-model="filterData.channel_id" placeholder="请选择">
             <el-option
               v-for="item in channelOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -44,27 +41,62 @@
         </el-form-item>
       </el-form>
     </el-card>
+    <!-- 结果区域 -->
+    <el-card style="margin-top:20px">
+      <div slot="header">根据筛选条件共查询到 0 条结果：</div>
+      <el-table :data="articles">
+        <el-table-column label="封面"></el-table-column>
+        <el-table-column label="标题" prop="title"></el-table-column>
+        <el-table-column label="状态"></el-table-column>
+        <el-table-column label="发布时间" prop="pubdate"></el-table-column>
+        <el-table-column label="操作"></el-table-column>
+      </el-table>
+      <el-pagination style="margin-top:20px" background layout="prev, pager, next" :total="1000"></el-pagination>
+    </el-card>
   </div>
 </template>
 
 <script>
+// import MyBread from '@/components/my-bread'
 export default {
   //注意；组件名称不能和原生标签重名
+  // components:{MyBread},
   name: "app-article",
   data() {
     return {
+      articles: [],
       filterData: {
         status: null,
         channel_id: null,
-        begin_pubdate:null,
-        end_pubdate:null
+        begin_pubdate: null,
+        end_pubdate: null,
+        page:1,
+        per_page:20
       },
-      channelOptions: [
-        { label: "前端", value: 1 },
-        { label: "数据库", value: 2 }
-      ],
-      dateArr:[]
+      channelOptions: [],
+      dateArr: []
     };
+  },
+  created() {
+    this.getChannelOptions();
+    this.getArticles()
+  },
+  methods: {
+    //获取频道数据
+    async getChannelOptions() {
+      const res = await this.$http.get('channels');
+      // console.log(res);
+
+      this.channelOptions=res.data.data.channels
+    },
+    // 获取文章列表
+    async getArticles (){
+      const res = await this.$http.get('articles',{params:'this.filterData'})
+      console.log(res);
+      
+      this.articles=res.data.data.results
+
+    }
   }
 };
 </script>

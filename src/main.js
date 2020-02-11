@@ -13,6 +13,9 @@ import router from '@/router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
+import plugin from '@/plugin'
+Vue.use(plugin)
+
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
