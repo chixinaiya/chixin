@@ -71,9 +71,9 @@
         <el-table-column label="发布时间" prop="pubdate"></el-table-column>
         <el-table-column label="操作" width="120px">
           <!-- 操作 -->
-          <template>
-            <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle plain></el-button>
+          <template slot-scope="scope">
+            <el-button @click="toEditArticle(scope.row.id)" type="primary" icon="el-icon-edit" circle plain></el-button>
+            <el-button @click="delArticle(scope.row.id)" type="danger" icon="el-icon-delete" circle plain></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -117,6 +117,28 @@ export default {
     this.getArticles();
   },
   methods: {
+    //删除文章
+    delArticle(id){
+       this.$confirm('此操作将永久删除该文件, 是否继续?', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 删除请求
+        try{
+          await this.$http.delete(`articles/${id}`)
+          this.$message.success('删除成功')
+          this.getArticles()
+        } catch (e){
+          this.$message.error('删除失败')
+        }
+      
+      }).catch(() => {})
+    },
+    //去编辑文章
+    toEditArticle (id){
+      this.$router.push(`/publish?id=${id}`)
+    },
      // 频道改变后
     changeChannel () {
       if (this.filterData.channel_id === '') {

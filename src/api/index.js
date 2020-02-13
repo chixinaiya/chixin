@@ -1,15 +1,27 @@
 import axios from 'axios'
 import auth from '@/utils/auth'
 import router from '@/router'
+import JSOBIGINT from 'json-bigint'
 
 //对axios进行配置
-axios.defaults.baseURL='http://ttapi.research.itcast.cn/mp/v1_0/'
+axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 // axios.defaults.headers.Authorization = `Bearer ${auth.getUser().token}`
 
 
 // 基准地址配置
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 // 请求头token配置
+
+axios.defaults.transformResponse = [data => {
+//进行格式转换
+try{
+  //正常转换
+  return JSOBIGINT.parse(data)
+}catch (e){
+//转换异常还是使用原始数据
+return data
+}
+}]
 // axios.defaults.headers.Authorization = `Bearer ${auth.getUser().token}`
 // 请求拦截器
 axios.interceptors.request.use(config => {
