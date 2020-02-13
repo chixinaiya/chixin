@@ -21,7 +21,11 @@ const router = new VueRouter({
       path: '/', component: Home,
       children: [
         { path: '/', component: Welcome },
+<<<<<<< HEAD
         { path: '/article', component: Article }
+=======
+        {path:'/article',component:Article}
+>>>>>>> article
       ]
     },
     { path: '*', component: NotFound }

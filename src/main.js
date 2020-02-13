@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-//导入axios
+//导入自己配置的axios
 
 import axios from '@/api'
 
@@ -12,6 +12,9 @@ import axios from '@/api'
 import router from '@/router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+
+import plugin from '@/plugin'
+Vue.use(plugin)
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
