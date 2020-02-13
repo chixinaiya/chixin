@@ -18,7 +18,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
-          <el-select v-model="filterData.channel_id" placeholder="请选择">
+            <el-select @change="changeChannel" v-model="filterData.channel_id" placeholder="请选择" clearable>
             <el-option
               v-for="item in channelOptions"
               :key="item.id"
@@ -34,24 +34,58 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change="changeDate"
+            value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">筛选</el-button>
+          <el-button @click="search()" type="primary">筛选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <!-- 结果区域 -->
     <el-card style="margin-top:20px">
-      <div slot="header">根据筛选条件共查询到 0 条结果：</div>
+      <div slot="header">根据筛选条件共查询到{{total}}条结果：</div>
       <el-table :data="articles">
-        <el-table-column label="封面"></el-table-column>
+        <el-table-column label="封面">
+          <!-- 封面 -->
+          <template slot-scope="scope">
+            <el-image :src="scope.row.cover.images[0]" style="width:150px;height:100px">
+              <div slot="error">
+                <img src="../../assets/error.gif" style="width:150px;height:100px" />
+              </div>
+            </el-image>
+          </template>
+        </el-table-column>
         <el-table-column label="标题" prop="title"></el-table-column>
-        <el-table-column label="状态"></el-table-column>
+        <el-table-column label="状态">
+          <!-- 状态栏 -->
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status===0" type="info">草稿</el-tag>
+            <el-tag v-if="scope.row.status===1">待审核</el-tag>
+            <el-tag v-if="scope.row.status===2" type="success">审核通过</el-tag>
+            <el-tag v-if="scope.row.status===3" type="warning">审核失败</el-tag>
+            <el-tag v-if="scope.row.status===4" type="danger">已删除</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="发布时间" prop="pubdate"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作" width="120px">
+          <!-- 操作 -->
+          <template>
+            <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle plain></el-button>
+          </template>
+        </el-table-column>
       </el-table>
-      <el-pagination style="margin-top:20px" background layout="prev, pager, next" :total="1000"></el-pagination>
+      <el-pagination
+        style="margin-top:20px"
+        background
+        layout="prev, pager, next"
+        @current-change="pager"
+        :current-page="filterData.page"
+        :page-size="filterData.per_page"
+        :total="total"
+      ></el-pagination>
     </el-card>
   </div>
 </template>
@@ -65,13 +99,14 @@ export default {
   data() {
     return {
       articles: [],
+      total: 0,
       filterData: {
         status: null,
         channel_id: null,
         begin_pubdate: null,
         end_pubdate: null,
-        page:1,
-        per_page:20
+        page: 1,
+        per_page: 20
       },
       channelOptions: [],
       dateArr: []
@@ -79,23 +114,53 @@ export default {
   },
   created() {
     this.getChannelOptions();
-    this.getArticles()
+    this.getArticles();
   },
   methods: {
+     // 频道改变后
+    changeChannel () {
+      if (this.filterData.channel_id === '') {
+        this.filterData.channel_id = null
+      }
+    },
+    //筛选事件
+    search(){
+      this.filterData.page=1
+      this.getArticles()
+    },
+    // 选择日期范围
+    changeDate(dateArr) {
+      if (dateArr) {
+        this.filterData.begin_pubdate = dateArr[0];
+        this.filterData.end_pubdate = dateArr[1];
+      }else{
+        this.filterData.begin_pubdate=null
+        this.filterData.end_pubdate=null
+      }
+    },
+    //分页切换
+    pager(newPage) {
+      //修改参数
+      // console.log(newPage);
+
+      this.filterData.page = newPage;
+      this.getArticles();
+    },
     //获取频道数据
     async getChannelOptions() {
-      const res = await this.$http.get('channels');
+      const res = await this.$http.get("channels");
       // console.log(res);
 
-      this.channelOptions=res.data.data.channels
+      this.channelOptions = res.data.data.channels;
     },
     // 获取文章列表
-    async getArticles (){
-      const res = await this.$http.get('articles',{params:'this.filterData'})
-      console.log(res);
-      
-      this.articles=res.data.data.results
+    async getArticles() {
+      const res = await this.$http.get("articles", { params: this.filterData });
+      // console.log(res);
 
+      this.articles = res.data.data.results;
+      // 设置总条数
+      this.total = res.data.data.total_count;
     }
   }
 };
