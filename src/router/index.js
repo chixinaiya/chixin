@@ -23,12 +23,10 @@ const router = new VueRouter({
       children: [
         { path: '/', component: Welcome },
 
-<<<<<<< HEAD
-        {path:'/article',component:Article}
-=======
+
         {path:'/article',component:Article},
         {path:'/image',component:Image}
->>>>>>> image
+
 
       ]
     },
