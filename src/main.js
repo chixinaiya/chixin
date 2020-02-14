@@ -12,6 +12,9 @@ import axios from '@/api'
 import router from '@/router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+// 自己的样式，注意写在饿了么样式下方，才能覆盖样式
+// 引入之后，作用与每个组件，全局样式
+import '@/styles/index.less'
 
 import plugin from '@/plugin'
 Vue.use(plugin)
