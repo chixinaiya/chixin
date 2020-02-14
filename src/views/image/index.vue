@@ -84,11 +84,22 @@ export default {
   },
   methods: {
     // 上传成功
-    handleSuccess () {},
+    handleSuccess (res) {
+      //提示 预览
+      this.$message.success('上传成功')
+      this.imageUrl=res.data.url
+      //关闭对话框 渲染页面
+      window.setTimeout(()=>{
+        this.dialogVisible=false
+        this.getImages()
+      },3000)
+    },
     //打开对话框
     openDialog() {
       // 打开对话框
       this.dialogVisible = true;
+      //清空预览图
+      this.imageUrl=null
     },
     //删除函数
     delImage(id) {
