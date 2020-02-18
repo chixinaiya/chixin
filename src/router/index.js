@@ -10,6 +10,7 @@ import Welcome from '@/views/welcome'
 import NotFound from '@/views/404'
 import Article from '@/views/article'
 import Image from '@/views/image'
+import Publish from '@/views/publish'
 
 
 Vue.use(VueRouter)
@@ -22,12 +23,9 @@ const router = new VueRouter({
       path: '/', component: Home,
       children: [
         { path: '/', component: Welcome },
-
-
-        {path:'/article',component:Article},
-        {path:'/image',component:Image}
-
-
+        { path: '/article', component: Article },
+        { path: '/image', component: Image },
+        { path: '/publish', component: Publish }
       ]
     },
     { path: '*', component: NotFound }
@@ -35,7 +33,7 @@ const router = new VueRouter({
   // 路由规则
 })
 //前置导航守卫
-router.beforeEach((to, from, next)=> {
+router.beforeEach((to, from, next) => {
   //除去/login路由跳转，其他都需要本地存储token，才能放行
   if (to.path !== '/login' && !auth.getUser().token) return next('/login')
   next()

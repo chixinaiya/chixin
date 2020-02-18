@@ -19,14 +19,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
-            <el-select @change="changeChannel" v-model="filterData.channel_id" placeholder="请选择" clearable>
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+          <!-- 使用自己封装的组件 -->
+          <my-channel v-model="filterData.channel_id"></my-channel>
+          <!-- <my-channel :value="filterData.channel_id" @input="filterData.channel_id=$event"></my-channel> -->
         </el-form-item>
         <el-form-item label="日期">
           <el-date-picker
@@ -114,7 +109,7 @@ export default {
     };
   },
   created() {
-    this.getChannelOptions();
+    // this.getChannelOptions();
     this.getArticles();
   },
   methods: {
@@ -141,11 +136,11 @@ export default {
       this.$router.push(`/publish?id=${id}`)
     },
      // 频道改变后
-    changeChannel () {
-      if (this.filterData.channel_id === '') {
-        this.filterData.channel_id = null
-      }
-    },
+    // changeChannel () {
+    //   if (this.filterData.channel_id === '') {
+    //     this.filterData.channel_id = null
+    //   }
+    // },
     //筛选事件
     search(){
       this.filterData.page=1
@@ -170,12 +165,12 @@ export default {
       this.getArticles();
     },
     //获取频道数据
-    async getChannelOptions() {
-      const res = await this.$http.get("channels");
-      // console.log(res);
+    // async getChannelOptions() {
+    //   const res = await this.$http.get("channels");
+    //   // console.log(res);
 
-      this.channelOptions = res.data.data.channels;
-    },
+    //   this.channelOptions = res.data.data.channels;
+    // },
     // 获取文章列表
     async getArticles() {
       const res = await this.$http.get("articles", { params: this.filterData });
