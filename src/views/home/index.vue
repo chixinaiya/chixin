@@ -14,7 +14,7 @@
         :collapse-transition="false"
         router
       >
-       <el-menu-item index="/">
+        <el-menu-item index="/">
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
         </el-menu-item>
@@ -49,7 +49,7 @@
         <span @click="toggleMenu" class="icon el-icon-s-fold"></span>
         <span class="text">江苏传智播客科技教育有限公司</span>
         <!-- 右边下拉菜单 -->
-        <el-dropdown class="my-dropdown" @command="handleClick"> 
+        <el-dropdown class="my-dropdown" @command="handleClick">
           <span class="el-dropdown-link">
             <img class="head" :src="photo" alt />
             <strong class="name">{{name}}</strong>
@@ -70,38 +70,43 @@
 </template>
 
 <script>
-import auth from '@/utils/auth'
+import auth from "@/utils/auth";
+import eventBus from "@/eventBus";
 export default {
   name: "app-home",
-  data () {
+  data() {
     return {
-      isOpen:true,
-      name:'',
-      photo:''
-
-    }
+      isOpen: true,
+      name: "",
+      photo: ""
+    };
   },
-  created () {
-    const user=auth.getUser()
-    this.name=user.name
-    this.photo=user.photo
+  created() {
+    const user = auth.getUser();
+    this.name = user.name;
+    this.photo = user.photo;
+    eventBus.$on("updateUserName", (name) => {
+      this.name = name;
+    });
+    eventBus.$on('updateUserPhoto',(photo)=>{
+      this.photo=photo
+    })
   },
-  methods:{
-    toggleMenu () {
-      this.isOpen=!this.isOpen
+  methods: {
+    toggleMenu() {
+      this.isOpen = !this.isOpen;
     },
-     handleClick (command){
-    if(command==='setting'){
-      this.$router.push('/setting')
-    }
+    handleClick(command) {
+      if (command === "setting") {
+        this.$router.push("/setting");
+      }
 
-    if(command==='logout'){
-      auth.delUser()
-      this.$router.push('/login')
+      if (command === "logout") {
+        auth.delUser();
+        this.$router.push("/login");
+      }
     }
   }
-  }
- 
 };
 </script>
 
@@ -120,7 +125,7 @@ export default {
       background: #002244 url(../../assets/logo_admin.png) no-repeat center /
         140px auto;
     }
-    .minLogo{
+    .minLogo {
       background-image: url(../../assets/logo_admin_01.png);
       background-size: 36px auto;
     }
